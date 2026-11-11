@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: StyreneB-Regular;
+  src: url(/fonts/StyreneB-Regular-Trial-BF63f6cbe9db1d5.otf);
+}
+
+*{
+  font-family:'StyreneB-Regular' ;
+}
+

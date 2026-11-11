@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FLOWBOARD</title>
+  <link rel="stylesheet" href="src/output.css">
+</head>
+
+<body class="bg-[#09090B] col text-white p-12">
+  <!-- npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch -->
+  <h1 class=" text-4xl pb-1 mb-4">BRUME BOARD</h1>
+  <main class="grid grid-cols-5 gap-4 ">
+    <aside class="p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
+      <span class=" p-2 bg-[#202023] rounded-sm">1</span>
+      <span class=" p-2 bg-[#202023] rounded-sm">2</span>
+      <span class=" p-2 bg-[#202023] rounded-sm">3</span>
+      <span class=" p-2 bg-[#202023] rounded-sm">4</span>
+      <span class=" p-2 bg-[#202023] rounded-sm">5</span>
+      <span class=" p-2 bg-[#202023] rounded-sm">6</span>
+    </aside>
+
+    <section class="col-span-4 grid gap-1 " >
+      <h2 class="text-2xl">FLOWBOARD</h2>
+      <label >
+        <input id="searchInput" type="search" placeholder="Filter Board" class="bg-[#202023]  p-2 w-93 rounded-md " style="border: solid 1px #38383d; ">
+      </label>
+
+      <div id="BoardsContainer" class="grid grid-cols-3 gap-5">
+        <div id="todo" class="p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
+          <h4>To Do</h4>
+          <article data-class="cards" class=" p-2 bg-[#202023] rounded-sm">
+            <h6>nothing</h6>
+            <data>data</data>
+          </article>
+          <button id="plusTodo" type="button" class="bg-[#202023]  rounded-md w-full">+</button>
+        </div>
+
+        <div id="todo" class="p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
+          <h4>To Do</h4>
+          <article data-class="cards" class=" p-2 bg-[#202023] rounded-sm">
+            <h6>nothing</h6>
+            <data>data</data>
+          </article>
+          <button id="plusTodo" type="button" class="bg-[#202023]  rounded-md w-full">+</button>
+        </div>
+        
+        <div id="todo" class="p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
+          <h4>To Do</h4>
+          <article data-class="cards" class=" p-2 bg-[#202023] rounded-sm">
+            <h6>nothing</h6>
+            <data>data</data>
+          </article>
+          <button id="plusTodo" type="button" class="bg-[#202023]  rounded-md w-full">+</button>
+        </div>
+
+
+
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="UI.js"></script>
+  <script type="module" src="API.js"></script>
+</body>
+
+</html>

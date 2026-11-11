@@ -6,10 +6,10 @@ fetch(url)
 // resizeBy.json()
 // response.ok
 
-if(!res.ok){
-  // throw new Error(`response status : ${resizeBy.status}`)
+// if(!res.ok){
+//   throw new Error(`response status : ${resizeBy.status}`)
 
-}
+// }
 // catch(error){
 //   error.message
 // }
