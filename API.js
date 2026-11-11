@@ -1,84 +1,38 @@
-
-// On the deployed API, additions, modifications and deletions (POST, PUT, PATCH, DELETE, and POST /reset) require the parameter 
-// ?password=…. Without him, the answer is 401. Readings remain free.
 let cardsDb = []
+let resetWrapper = document.getElementById('resetWrapper')
+let resError = document.createElement('p')
+let retryBtn = document.createElement('button')
+let todoElementsWrapper = document.getElementById('todoElementsWrapper')
+let todoTitle = document.createElement('h6')
+let url = "https://flowboard-api-virid.vercel.app/cards"
 
+function ResponseFunc(resolve,reject){
 
-const url = `https://flowboard-api-virid.vercel.app`
-const delayurl = `https://flowboard-api-virid.vercel.app?_delay=2000`
-const failedurl = `https://flowboard-api-virid.vercel.app?_fail=404`
-const failed500 = `https://flowboard-api-virid.vercel.app?_fail=500` //?_fail=503
-const cards = "https://flowboard-api-virid.vercel.app/cards"
-const docs = "https://flowboard-api-virid.vercel.app/docs"
-const members = "https://flowboard-api-virid.vercel.app/members"
-const openapi = "https://flowboard-api-virid.vercel.app/openapi.json"
-const reset = "https://flowboard-api-virid.vercel.app/reset"
-
-fetch(cards)
-.then(res => {
-  if(!res.ok){
-      throw new Error('failed to fetch data')
+  fetch(url)
+  .then(res => {
+    if(!res.ok){
+      throw new Error(`enable to fetch ${res.status}`)
     }
     return res.json()
   })
-  .then(data =>{
-     cardsDb = data
-     displayCards()
-     displayByName()
-     displayByDescription()
-     displayByStatus()
-     displayByPriority()
-     
+  .then(data => {
+    cardsDb = data
+    console.log(cardsDb);
+    displayCards()
   })
-  .catch(error => console.log(error.message))
-  
+  .catch(error => {
+    resError.textContent = error
+    resetWrapper.insertBefore(resError, resetWrapper.firstChild)
 
-// const listCardsUrl = 'https://flowboard-api-virid.vercel.app/cards?assignee=Lucas%20Martin&q=fetch&title_like=%5Ecr&tags_like=front&_sort=dueDate'
-// fetch(listCardsUrl, {
-//   headers: {
-//     'X-Workspace': 'public'
-//   }
-// })
-// .then(res => {
-//   if(!res.ok){
-//         throw new Error('failed to display  cards')
-//   }
-//   return res.json()
-// })
-// .then(data => console.log(data))
-// .catch(error => console.log(error.message))
+  })
+}
 
 function displayCards(){
-  
-console.log(cardsDb);
-
-}
-
-
-function displayByName(){
-    cardsDb.forEach(card => {
-    console.log(card.title);
+  todoElementsWrapper.replaceChildren()
+  cardsDb.forEach(card => {
     
+    todoTitle.textContent = card.title
+    todoElementsWrapper.insertBefore(todoTitle, todoElementsWrapper.firstChild)
   })
 }
-
-function displayByDescription(){
-      cardsDb.forEach(card => {
-    console.log(card.description);
-    
-  })
-}
-
-function displayByStatus(){
-        cardsDb.forEach(card => {
-    console.log(card.status);
-    
-  })
-}
-
-function displayByPriority(){
-          cardsDb.forEach(card => {
-    console.log(card.priority);
-    
-  })
-}
+ResponseFunc()
