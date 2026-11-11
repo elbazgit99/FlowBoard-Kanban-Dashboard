@@ -10,7 +10,7 @@
 
 <body class="bg-[#09090B] col text-white p-12">
   <!-- npx @tailwindcss/cli -i ./src/input.css -o ./src/output.css --watch -->
-  <h1 class=" text-4xl pb-1 mb-4">BRUME BOARD</h1>
+  <h1 class=" text-4xl pb-1 mb-4"><span class="text-amber-700">YouCode</span> Scrum</h1>
   <main class="grid grid-cols-5 gap-4 ">
     <aside class="p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
       <span class=" p-2 bg-[#202023] rounded-sm">1</span>
@@ -28,31 +28,31 @@
       </label>
 
       <div id="BoardsContainer" class="grid grid-cols-3 gap-5">
-        <div id="todo" class="p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
+        <div id="todo" class="boards  p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
           <h4>To Do</h4>
-          <article data-class="cards" class=" p-2 bg-[#202023] rounded-sm">
+          <article  class=" p-2 bg-[#202023] rounded-sm">
             <h6>nothing</h6>
             <data>data</data>
           </article>
-          <button id="plusTodo" type="button" class="bg-[#202023]  rounded-md w-full">+</button>
+          <button id="add" type="button" class="modalBtn bg-[#202023]  rounded-md w-full">+</button>
         </div>
 
-        <div id="todo" class="p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
-          <h4>To Do</h4>
-          <article data-class="cards" class=" p-2 bg-[#202023] rounded-sm">
+        <div class="boards  p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
+          <h4>In Progress</h4>
+          <article  class=" p-2 bg-[#202023] rounded-sm">
             <h6>nothing</h6>
             <data>data</data>
           </article>
-          <button id="plusTodo" type="button" class="bg-[#202023]  rounded-md w-full">+</button>
+          <button id="add" type="button" class="modalBtn bg-[#202023]  rounded-md w-full">+</button>
         </div>
         
-        <div id="todo" class="p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
-          <h4>To Do</h4>
-          <article data-class="cards" class=" p-2 bg-[#202023] rounded-sm">
+        <div id="done" class="boards   p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
+          <h4>Done</h4>
+          <article  class=" p-2 bg-[#202023] rounded-sm">
             <h6>nothing</h6>
             <data>data</data>
           </article>
-          <button id="plusTodo" type="button" class="bg-[#202023]  rounded-md w-full">+</button>
+          <button id="add" type="button" class="modalBtn bg-[#202023]  rounded-md w-full">+</button>
         </div>
 
 

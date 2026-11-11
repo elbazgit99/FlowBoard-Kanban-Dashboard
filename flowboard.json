@@ -1,0 +1,1279 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FlowBoard API",
+    "version": "1.0.0",
+    "description": "API REST d'un tableau Kanban, conçue pour s'entraîner avec **fetch**, **Axios** et **XMLHttpRequest**.\n\nElle reproduit le comportement de **json-server 0.17** pour `/cards` : un projet qui fonctionne\navec `http://localhost:3000` fonctionne ici en changeant **uniquement la baseURL**.\n\n### Espaces de travail\nEnvoyez l'en-tête facultatif `X-Workspace: votre-pseudo` pour travailler sur vos propres cartes.\nSans en-tête, vous utilisez l'espace partagé `public`. Un espace inconnu est créé automatiquement\navec les données de départ (12 cartes, 5 membres). `POST /reset` le remet dans cet état.\n\n### Simuler la latence et les erreurs\nAjoutez `?_delay=2000` (millisecondes, plafonné à 5000) pour voir votre état de chargement, et\n`?_fail=404`, `?_fail=500` ou `?_fail=503` pour forcer une erreur. Avec `_fail`, la requête\nn'est pas exécutée : rien n'est créé, modifié ni supprimé.\n\n### Sécurité (exercice XSS)\nLe serveur stocke le texte **tel quel**, sans nettoyage HTML : une carte intitulée\n`<img src=x onerror=alert(1)>` est renvoyée à l'identique. C'est volontaire : l'affichage sûr\n(`textContent` plutôt que `innerHTML`) est la responsabilité du client.\n\n### Écritures protégées\nSur l'API déployée, les ajouts, modifications et suppressions (POST, PUT, PATCH, DELETE, et\n`POST /reset`) exigent le paramètre `?password=…`. Sans lui, la réponse est **401**.\nLes lectures restent libres.\n\n### Limitation de débit\n120 requêtes par minute et par adresse IP. Au-delà, réponse **429** avec l'en-tête `Retry-After`.",
+    "license": {
+      "name": "MIT",
+      "identifier": "MIT"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://flowboard-api-virid.vercel.app",
+      "description": "Ce serveur"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Cartes",
+      "description": "CRUD des cartes du tableau (compatible json-server 0.17)."
+    },
+    {
+      "name": "Membres",
+      "description": "Personnes assignables à une carte (lecture seule)."
+    },
+    {
+      "name": "Espace de travail",
+      "description": "Réinitialisation de l’espace courant."
+    },
+    {
+      "name": "Accueil",
+      "description": "Informations sur l’API."
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Accueil"
+        ],
+        "summary": "Page d’accueil",
+        "operationId": "getHome",
+        "responses": {
+          "200": {
+            "description": "Nom, version et liens utiles.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "version": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "links": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/cards": {
+      "get": {
+        "tags": [
+          "Cartes"
+        ],
+        "summary": "Lister les cartes",
+        "description": "Filtres combinables (ET entre champs différents, OU si un même champ est répété : `?status=todo&status=done`). Comme json-server, tout champ de la carte peut servir de filtre, avec les suffixes `_like`, `_ne`, `_gte`, `_lte`. L’en-tête `X-Total-Count` donne le nombre de cartes après filtrage ; avec `_page`, l’en-tête `Link` donne les pages first/prev/next/last.",
+        "operationId": "listCards",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Workspace"
+          },
+          {
+            "$ref": "#/components/parameters/Delay"
+          },
+          {
+            "$ref": "#/components/parameters/Fail"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Égalité stricte.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "todo",
+                "in-progress",
+                "done"
+              ]
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "description": "Égalité stricte.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ]
+            }
+          },
+          {
+            "name": "assignee",
+            "in": "query",
+            "description": "Nom exact du membre.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "Lucas Martin"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Recherche plein texte, insensible à la casse, dans title, description et tags.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "fetch"
+          },
+          {
+            "name": "title_like",
+            "in": "query",
+            "description": "Expression régulière, insensible à la casse, appliquée au titre.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "^cr"
+          },
+          {
+            "name": "tags_like",
+            "in": "query",
+            "description": "Cartes dont les tags contiennent ce motif (comparé à \"tag1,tag2\").",
+            "schema": {
+              "type": "string"
+            },
+            "example": "front"
+          },
+          {
+            "name": "dueDate_lte",
+            "in": "query",
+            "description": "Échéance au plus tard à cette date (YYYY-MM-DD). Existe aussi en `_gte`.",
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "_sort",
+            "in": "query",
+            "description": "Champ(s) de tri, séparés par des virgules.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "id",
+                "title",
+                "status",
+                "priority",
+                "assignee",
+                "dueDate",
+                "createdAt",
+                "updatedAt"
+              ]
+            },
+            "example": "dueDate"
+          },
+          {
+            "name": "_order",
+            "in": "query",
+            "description": "Sens du tri, un par champ de `_sort` (par défaut asc).",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ]
+            }
+          },
+          {
+            "name": "_page",
+            "in": "query",
+            "description": "Numéro de page (à partir de 1). `_limit` vaut 10 par défaut.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "_limit",
+            "in": "query",
+            "description": "Nombre de cartes par page, ou nombre maximal de cartes sans `_page`.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "_start",
+            "in": "query",
+            "description": "Index de départ (avec `_end` ou `_limit`).",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "_end",
+            "in": "query",
+            "description": "Index de fin, exclu.",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tableau de cartes (éventuellement vide).",
+            "headers": {
+              "X-Total-Count": {
+                "$ref": "#/components/headers/XTotalCount"
+              },
+              "Link": {
+                "$ref": "#/components/headers/Link"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Card"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 5,
+                    "title": "Afficher les cartes avec fetch",
+                    "description": "Récupérer GET /cards et générer une colonne par statut.",
+                    "status": "in-progress",
+                    "priority": "high",
+                    "assignee": "Yasmine Benali",
+                    "dueDate": "2026-11-15",
+                    "tags": [
+                      "front",
+                      "api"
+                    ],
+                    "createdAt": "2026-11-08T09:00:00.000Z",
+                    "updatedAt": "2026-11-08T09:00:00.000Z"
+                  }
+                ]
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Cartes"
+        ],
+        "summary": "Créer une carte",
+        "description": "Renvoie la carte créée avec un `id` numérique égal au plus grand id existant + 1, comme json-server.",
+        "operationId": "createCard",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Workspace"
+          },
+          {
+            "$ref": "#/components/parameters/Delay"
+          },
+          {
+            "$ref": "#/components/parameters/Fail"
+          },
+          {
+            "$ref": "#/components/parameters/Password"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CardInput"
+              },
+              "example": {
+                "title": "Ajouter le mode sombre",
+                "status": "todo",
+                "priority": "medium",
+                "assignee": "Amina Haddad",
+                "dueDate": "2026-12-01",
+                "tags": [
+                  "ui"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Carte créée.",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "URL de la carte."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Card"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "L’espace a atteint son nombre maximal de cartes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "error": "WorkspaceFull",
+                  "message": "Cet espace contient déjà 200 cartes (maximum 200)."
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/cards/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Cartes"
+        ],
+        "summary": "Lire une carte",
+        "operationId": "getCard",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Workspace"
+          },
+          {
+            "$ref": "#/components/parameters/Delay"
+          },
+          {
+            "$ref": "#/components/parameters/Fail"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "La carte.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Card"
+                },
+                "example": {
+                  "id": 5,
+                  "title": "Afficher les cartes avec fetch",
+                  "description": "Récupérer GET /cards et générer une colonne par statut.",
+                  "status": "in-progress",
+                  "priority": "high",
+                  "assignee": "Yasmine Benali",
+                  "dueDate": "2026-11-15",
+                  "tags": [
+                    "front",
+                    "api"
+                  ],
+                  "createdAt": "2026-11-08T09:00:00.000Z",
+                  "updatedAt": "2026-11-08T09:00:00.000Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Cartes"
+        ],
+        "summary": "Remplacer une carte",
+        "description": "Remplacement complet : les champs facultatifs absents reprennent leur valeur par défaut. `id`, `createdAt` et `updatedAt` envoyés dans le corps sont ignorés.",
+        "operationId": "replaceCard",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Workspace"
+          },
+          {
+            "$ref": "#/components/parameters/Delay"
+          },
+          {
+            "$ref": "#/components/parameters/Fail"
+          },
+          {
+            "$ref": "#/components/parameters/Password"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CardInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Carte remplacée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Card"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Cartes"
+        ],
+        "summary": "Modifier une partie d’une carte",
+        "description": "Seuls les champs envoyés sont modifiés, par exemple `{ \"status\": \"done\" }`.",
+        "operationId": "updateCard",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Workspace"
+          },
+          {
+            "$ref": "#/components/parameters/Delay"
+          },
+          {
+            "$ref": "#/components/parameters/Fail"
+          },
+          {
+            "$ref": "#/components/parameters/Password"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CardPatch"
+              },
+              "example": {
+                "status": "done"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Carte modifiée.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Card"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cartes"
+        ],
+        "summary": "Supprimer une carte",
+        "operationId": "deleteCard",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Workspace"
+          },
+          {
+            "$ref": "#/components/parameters/Delay"
+          },
+          {
+            "$ref": "#/components/parameters/Fail"
+          },
+          {
+            "$ref": "#/components/parameters/Password"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Carte supprimée : objet vide.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "example": {}
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/members": {
+      "get": {
+        "tags": [
+          "Membres"
+        ],
+        "summary": "Lister les membres",
+        "description": "Accepte les mêmes paramètres de filtre, tri et pagination que /cards.",
+        "operationId": "listMembers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Workspace"
+          },
+          {
+            "$ref": "#/components/parameters/Delay"
+          },
+          {
+            "$ref": "#/components/parameters/Fail"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Membres de l’espace.",
+            "headers": {
+              "X-Total-Count": {
+                "$ref": "#/components/headers/XTotalCount"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Member"
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Amina Haddad",
+                    "initials": "AH"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Lucas Martin",
+                    "initials": "LM"
+                  },
+                  {
+                    "id": 3,
+                    "name": "Yasmine Benali",
+                    "initials": "YB"
+                  },
+                  {
+                    "id": 4,
+                    "name": "Thomas Leroy",
+                    "initials": "TL"
+                  },
+                  {
+                    "id": 5,
+                    "name": "Inès Moreau",
+                    "initials": "IM"
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/members/{id}": {
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/Id"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Membres"
+        ],
+        "summary": "Lire un membre",
+        "operationId": "getMember",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Workspace"
+          },
+          {
+            "$ref": "#/components/parameters/Delay"
+          },
+          {
+            "$ref": "#/components/parameters/Fail"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Le membre.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Member"
+                },
+                "example": {
+                  "id": 1,
+                  "name": "Amina Haddad",
+                  "initials": "AH"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/reset": {
+      "post": {
+        "tags": [
+          "Espace de travail"
+        ],
+        "summary": "Réinitialiser l’espace courant",
+        "description": "Supprime toutes les cartes et tous les membres de l’espace et restaure les données de départ : 12 cartes réparties sur les 3 colonnes et 5 membres. Aucun corps n’est attendu.",
+        "operationId": "resetWorkspace",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Workspace"
+          },
+          {
+            "$ref": "#/components/parameters/Delay"
+          },
+          {
+            "$ref": "#/components/parameters/Fail"
+          },
+          {
+            "$ref": "#/components/parameters/Password"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Espace réinitialisé.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "workspace": {
+                      "type": "string"
+                    },
+                    "cards": {
+                      "type": "integer"
+                    },
+                    "members": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "example": {
+                  "message": "Espace « public » réinitialisé.",
+                  "workspace": "public",
+                  "cards": 12,
+                  "members": 5
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/ValidationError"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Card": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "status",
+          "priority",
+          "assignee",
+          "dueDate",
+          "tags",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Identifiant auto-incrémenté.",
+            "readOnly": true
+          },
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 80
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 300
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "todo",
+              "in-progress",
+              "done"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "assignee": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Nom d’un membre de GET /members, ou null."
+          },
+          "dueDate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "description": "YYYY-MM-DD"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 30
+            },
+            "maxItems": 10
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
+      "CardInput": {
+        "type": "object",
+        "description": "Corps de POST et PUT. Les clés inconnues, `id`, `createdAt` et `updatedAt` sont ignorés.",
+        "required": [
+          "title",
+          "status",
+          "priority"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 80,
+            "description": "Espaces de début et de fin retirés. Le HTML n’est pas nettoyé."
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 300,
+            "default": ""
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "todo",
+              "in-progress",
+              "done"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "assignee": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "default": null,
+            "description": "Doit correspondre exactement au `name` d’un membre."
+          },
+          "dueDate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "default": null
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 30
+            },
+            "maxItems": 10,
+            "default": []
+          }
+        }
+      },
+      "CardPatch": {
+        "type": "object",
+        "description": "Corps de PATCH : tous les champs de CardInput sont facultatifs.",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 80
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 300
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "todo",
+              "in-progress",
+              "done"
+            ]
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ]
+          },
+          "assignee": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "dueDate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10
+          }
+        }
+      },
+      "Member": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "initials"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "initials": {
+            "type": "string"
+          }
+        }
+      },
+      "ValidationError": {
+        "type": "object",
+        "required": [
+          "error",
+          "details"
+        ],
+        "properties": {
+          "error": {
+            "const": "ValidationError"
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "field",
+                "message"
+              ],
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "error",
+          "message"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "Id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Identifiant numérique.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "example": 1
+      },
+      "Workspace": {
+        "name": "X-Workspace",
+        "in": "header",
+        "required": false,
+        "description": "Espace de travail personnel (1 à 32 caractères a-z, 0-9, - et _). Par défaut : public.",
+        "schema": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9_-]{1,32}$",
+          "default": "public"
+        }
+      },
+      "Delay": {
+        "name": "_delay",
+        "in": "query",
+        "required": false,
+        "description": "Retarde la réponse de N millisecondes (5000 au maximum).",
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 5000
+        }
+      },
+      "Password": {
+        "name": "password",
+        "in": "query",
+        "required": false,
+        "description": "Mot de passe des écritures (POST, PUT, PATCH, DELETE), exigé quand le serveur en définit un.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "Fail": {
+        "name": "_fail",
+        "in": "query",
+        "required": false,
+        "description": "Force une erreur HTTP sans exécuter la requête.",
+        "schema": {
+          "type": "integer",
+          "enum": [
+            404,
+            500,
+            503
+          ]
+        }
+      }
+    },
+    "headers": {
+      "XTotalCount": {
+        "description": "Nombre total d’éléments correspondant aux filtres, avant pagination.",
+        "schema": {
+          "type": "integer"
+        }
+      },
+      "Link": {
+        "description": "Avec `_page` : liens vers les pages first, prev, next et last.",
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "Ressource introuvable : objet vide, comme json-server.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object"
+            },
+            "example": {}
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Données invalides.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "example": {
+              "error": "ValidationError",
+              "details": [
+                {
+                  "field": "title",
+                  "message": "title doit contenir au moins 3 caractères."
+                }
+              ]
+            }
+          }
+        }
+      },
+      "TooManyRequests": {
+        "description": "Limite de débit atteinte.",
+        "headers": {
+          "Retry-After": {
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Secondes à attendre."
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "error": {
+                  "const": "TooManyRequests"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "retryAfter": {
+                  "type": "integer"
+                }
+              }
+            },
+            "example": {
+              "error": "TooManyRequests",
+              "message": "Trop de requêtes…",
+              "retryAfter": 42
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "Erreur serveur (réelle ou simulée avec `_fail=500`).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "InternalServerError",
+              "message": "Erreur serveur simulée (_fail=500)."
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Mot de passe des écritures absent ou incorrect : rien n’a été modifié.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "Unauthorized",
+              "message": "Les ajouts, modifications et suppressions exigent le paramètre ?password=…"
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "Service indisponible (simulé avec `_fail=503`).",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": "ServiceUnavailable",
+              "message": "Service indisponible simulé (_fail=503)."
+            }
+          }
+        }
+      }
+    }
+  }
+}
