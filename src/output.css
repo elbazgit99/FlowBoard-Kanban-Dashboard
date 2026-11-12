@@ -184,23 +184,8 @@
   .grid {
     display: grid;
   }
-  .table {
-    display: table;
-  }
-  .h-2 {
-    height: calc(var(--spacing) * 2);
-  }
-  .h-5 {
-    height: calc(var(--spacing) * 5);
-  }
   .h-10 {
     height: calc(var(--spacing) * 10);
-  }
-  .h-20 {
-    height: calc(var(--spacing) * 20);
-  }
-  .w-30 {
-    width: calc(var(--spacing) * 30);
   }
   .w-40 {
     width: calc(var(--spacing) * 40);
@@ -211,29 +196,8 @@
   .w-full {
     width: 100%;
   }
-  .max-w-9 {
-    max-width: calc(var(--spacing) * 9);
-  }
-  .max-w-9\/12 {
-    max-width: calc(9 / 12 * 100%);
-  }
-  .max-w-10 {
-    max-width: calc(var(--spacing) * 10);
-  }
-  .max-w-10\/12 {
-    max-width: calc(10 / 12 * 100%);
-  }
   .max-w-92 {
     max-width: calc(var(--spacing) * 92);
-  }
-  .max-w-96 {
-    max-width: calc(var(--spacing) * 96);
-  }
-  .border-collapse {
-    border-collapse: collapse;
-  }
-  .resize {
-    resize: both;
   }
   .grid-cols-3 {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -243,15 +207,6 @@
   }
   .flex-col {
     flex-direction: column;
-  }
-  .items-center {
-    align-items: center;
-  }
-  .justify-between {
-    justify-content: space-between;
-  }
-  .justify-center {
-    justify-content: center;
   }
   .justify-start {
     justify-content: flex-start;
@@ -271,9 +226,6 @@
   .gap-5 {
     gap: calc(var(--spacing) * 5);
   }
-  .gap-x-3 {
-    column-gap: calc(var(--spacing) * 3);
-  }
   .gap-x-5 {
     column-gap: calc(var(--spacing) * 5);
   }
@@ -290,30 +242,14 @@
     border-style: var(--tw-border-style);
     border-width: 1px;
   }
-  .border-4 {
-    border-style: var(--tw-border-style);
-    border-width: 4px;
-  }
   .border-\[\#27272A\] {
     border-color: #27272A;
-  }
-  .border-amber-50 {
-    border-color: var(--color-amber-50);
-  }
-  .border-amber-100 {
-    border-color: var(--color-amber-100);
-  }
-  .border-white {
-    border-color: var(--color-white);
   }
   .border-white\/75 {
     border-color: color-mix(in srgb, #fff 75%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
       border-color: color-mix(in oklab, var(--color-white) 75%, transparent);
     }
-  }
-  .border-b-amber-50 {
-    border-bottom-color: var(--color-amber-50);
   }
   .border-b-gray-500 {
     border-bottom-color: var(--color-gray-500);
@@ -342,9 +278,6 @@
   .pb-1 {
     padding-bottom: var(--spacing);
   }
-  .text-center {
-    text-align: center;
-  }
   .align-middle {
     vertical-align: middle;
   }
@@ -357,13 +290,6 @@
   }
   .text-white {
     color: var(--color-white);
-  }
-  .underline {
-    text-decoration-line: underline;
-  }
-  .outline {
-    outline-style: var(--tw-outline-style);
-    outline-width: 1px;
   }
 }
 @font-face {
@@ -378,16 +304,10 @@
   inherits: false;
   initial-value: solid;
 }
-@property --tw-outline-style {
-  syntax: "*";
-  inherits: false;
-  initial-value: solid;
-}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: block))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
       --tw-border-style: solid;
-      --tw-outline-style: solid;
     }
   }
 }

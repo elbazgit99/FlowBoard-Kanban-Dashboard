@@ -43,25 +43,27 @@ function displayTodoCardsTitle(){
     if(card.status === "todo"){
       let todoOptions = document.createElement('option')
       todoOptions.style.color = "white"
-      todoOptions.textContent = card.title
+      todoOptions.textContent = `${card.title}`
       todoOptions.value = card.title
-      todoSelection.insertBefore(todoOptions,todoSelection.firstChild)
-      return
+
+      let 
+      todoSelection.insertBefore(todoOptions, todoSelection.firstChild)
+
     }
   }) 
-  
-
-    // console.log(todoSelection);
  
 }
 
 todoSelection.addEventListener('change',function addTodoCart(event){
-      let todoTitle = document.createElement('h6')
+      let todoTitle = document.createElement('span')
       todoTitle.classList.add("bg-[#2A2A2D]","rounded-md")  //add() remove() toggle() replace() contains()
+      todoTitle.textContent += `${event.target.value}`
 
+      let todoPrierity = document.createElement('small')
+      todoPrierity.classList.add("bg-[#2A2A2D]","rounded-md")
+      todoPrierity.textContent += event.target.value
 
-        todoTitle.textContent += event.target.value
-        todoElementsWrapper.append(todoTitle)
+      todoElementsWrapper.append(todoTitle)
         
     })
 
@@ -118,7 +120,7 @@ doneSelection.addEventListener('change', function addInDone(event){
 
 let createCardBtn = document.getElementById('createCardBtn')
 createCardBtn.addEventListener('click', function cartCreation(){
-  
+
 })
 
 ResponseFunc()
