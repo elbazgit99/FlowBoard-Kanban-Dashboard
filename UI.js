@@ -153,9 +153,102 @@ function addInDone(event){
 
 
 
-let createCardBtn = document.getElementById('createCardBtn')
-createCardBtn.addEventListener('click', function cartCreation(){
-  
+
+
+
+let myModal = document.getElementById("myModal");
+let openModal = document.getElementById("openModal");
+
+let addBtn = document.getElementById("addBtn");
+  let removeBtn = document.getElementById("removeBtn");
+
+let title = document.getElementById("title");
+  let description = document.getElementById("description");
+let status = document.getElementById("status");
+let priority = document.getElementById("priority");
+
+
+openModal.addEventListener("click", function() {
+    myModal.style.display = "flex";
+});
+
+
+
+addBtn.addEventListener("click", function() {
+
+    if (title.value === "") {
+        return;
+    }
+
+    let newTask = {
+        title: title.value,
+        description: description.value,
+        status: status.value,
+        priority: priority.value
+    };
+
+    cardsDb.push(newTask)
+
+    if (newTask.status === "todo") {
+
+        if (!todoFilter.includes(newTask.priority)) {
+            todoFilter.push(newTask.priority);
+        }
+
+        let newOption = document.createElement("option")
+        newOption.value = newTask.title;
+        newOption.textContent = newTask.title;
+
+      todoSelection.append(newOption);
+    todoSelection.value = newTask.title;  
+        todoSelection.dispatchEvent(new Event("change"))
+
+        // Set the selected priority
+        todoElementsWrapper.lastElementChild.querySelector("select").value = newTask.priority;
+
+    } else if (newTask.status === "in-progress") {
+
+        if (!inProgressFilter.includes(newTask.priority)) {
+            inProgressFilter.push(newTask.priority);
+        }
+
+            let newOption = document.createElement("option")
+            newOption.value = newTask.title
+            newOption.textContent = newTask.title
+
+        inProgressSelection.append(newOption)
+
+        inProgressSelection.value = newTask.title
+        inProgressSelection.dispatchEvent(new Event('change'))
+
+        inProgressElementsWrapper.lastElementChild.querySelector('select').value = newTask.priority
+
+    }  else if (newTask.status === "done") {
+
+        if (!doneFilter.includes(newTask.priority)) {
+            doneFilter.push(newTask.priority)
+        }
+
+            let newOption = document.createElement("option")
+               newOption.value = newTask.title
+            newOption.textContent = newTask.title
+
+          doneSelection.append(newOption)
+
+        doneSelection.value = newTask.title
+    doneSelection.dispatchEvent(new Event('change'))
+
+        doneElementWrapper.lastElementChild.querySelector("select").value = newTask.priority;
+  }
+
+            myModal.style.display = 'none'
+});
+
+
+
+removeBtn.addEventListener('click', function() {
+
+     myModal.style.display = "none"
 })
 
 

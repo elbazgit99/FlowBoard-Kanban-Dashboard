@@ -33,11 +33,66 @@
 
       <fieldset class="flex align-middle justify-start gap-x-5">
         <label>
-          <input id="searchInput" type="search" placeholder="Filter Board By title" class="bg-[#202023]  p-2 w-92 max-w-92 rounded-md "
-            style="border: solid 1px #38383d; ">
+          <input id="searchInput" type="search" placeholder="Filter Board By title"
+            class="bg-[#202023]  p-2 w-92 max-w-92 rounded-md " style="border: solid 1px #38383d; ">
         </label>
-        <button  id="createCardBtn" type="button" class="h-10 bg-[#202023]  p-2 rounded-md w-40 border border-white/75">Create Card</button>
+        <button id="openModal" type="button"
+          class="h-10 bg-[#202023]  p-2 rounded-md w-40 border border-white/75">Create Card</button>
       </fieldset>
+
+      <!-- moda -->
+    <div id="myModal" class="modal">
+        <div id="modalContent" class="modal-content">
+
+            <h2 id="modalTitle" class="modal-title">Create Task</h2>
+
+            <label for="title" class="modal-label">Title</label>
+            <input type="text" id="title" class="modal-input"
+                placeholder="Enter task title">
+
+            <label for="description" class="modal-label">Description</label>
+            <textarea id="description" class="modal-textarea"
+                placeholder="Add a description..."></textarea>
+
+            <fieldset id="taskDetails" class="task-details">
+                <legend id="detailsLegend" class="details-legend">
+                    Task Details
+                </legend>
+
+                <div id="detailsRow" class="details-row">
+
+                    <div id="statusItem" class="detail-item">
+                        <label for="status" class="detail-label">Status</label>
+
+                        <select id="status" class="detail-select">
+                            <option value="todo">To Do</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="done">Done</option>
+                        </select>
+                    </div>
+
+                    <div id="priorityItem" class="detail-item">
+                        <label for="priority" class="detail-label">Priority</label>
+
+                        <select id="priority" class="detail-select">
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+
+                </div>
+            </fieldset>
+
+            <div id="modalButtons" class="modal-buttons">
+                <button id="addBtn" class="modal-btn">Add</button>
+                <button id="removeBtn" class="modal-btn">Remove</button>
+            </div>
+
+        </div>
+    </div>
+      <!-- end modal -->
+
 
       <div id="BoardsContainer" class="grid grid-cols-3 gap-5">
 
@@ -45,8 +100,9 @@
         <!-- TODO -->
         <div id="todo" class="boards  p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
           <label>
-            <select name="todoSelection" id="todoSelection" style="appearance: none; color: rgb(176, 154, 154);" class="bg-[#202023]  p-2 w-full rounded-md border border-white/75">
-              <option value="" selected disabled >Select Todo Cards 　　　　　　　　　　▼</option>
+            <select name="todoSelection" id="todoSelection" style="appearance: none; color: rgb(176, 154, 154);"
+              class="bg-[#202023]  p-2 w-full rounded-md border border-white/75">
+              <option value="" selected disabled>Select Todo Cards 　　　　　　　　　　▼</option>
             </select>
           </label>
           <h4>To Do</h4>
@@ -59,8 +115,9 @@
         <!-- IN PROGRESS -->
         <div class="boards  p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
           <label>
-            <select id="inProgressSelection" name="inProgress"   style="appearance: none; color: rgb(176, 154, 154);" class="bg-[#202023]  p-2 w-full rounded-md border border-white/75">
-              <option value="" selected disabled >Select In-Progress Cards 　　　　　　  ▼</option>
+            <select id="inProgressSelection" name="inProgress" style="appearance: none; color: rgb(176, 154, 154);"
+              class="bg-[#202023]  p-2 w-full rounded-md border border-white/75">
+              <option value="" selected disabled>Select In-Progress Cards 　　　　　　 ▼</option>
             </select>
           </label>
 
@@ -75,9 +132,10 @@
         <!-- DONE -->
         <div id="done" class="boards   p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
 
-          <label >
-            <select  id="doneSelection" name="doneSelection"  style="appearance: none; color: rgb(176, 154, 154);" class="bg-[#202023]  p-2 w-full rounded-md border border-b-gray-500" >
-              <option value=""  selected disabled>Select Done Cards　　　　　　　　　　▼ </option>
+          <label>
+            <select id="doneSelection" name="doneSelection" style="appearance: none; color: rgb(176, 154, 154);"
+              class="bg-[#202023]  p-2 w-full rounded-md border border-b-gray-500">
+              <option value="" selected disabled>Select Done Cards　　　　　　　　　　▼ </option>
             </select>
           </label>
 
