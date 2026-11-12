@@ -44,9 +44,9 @@ function displayTodoCardsTitle(){
       let todoOptions = document.createElement('option')
       todoOptions.style.color = "white"
       todoOptions.textContent = `${card.title}`
-      todoOptions.value = card.title
 
-      let 
+      todoOptions.value = card.title
+      todoOptions.dataset.todoPrierityAttribute = card.priority
       todoSelection.insertBefore(todoOptions, todoSelection.firstChild)
 
     }
@@ -57,13 +57,15 @@ function displayTodoCardsTitle(){
 todoSelection.addEventListener('change',function addTodoCart(event){
       let todoTitle = document.createElement('span')
       todoTitle.classList.add("bg-[#2A2A2D]","rounded-md")  //add() remove() toggle() replace() contains()
-      todoTitle.textContent += `${event.target.value}`
-
+      todoTitle.textContent += `${event.target.value} | `
+      
       let todoPrierity = document.createElement('small')
       todoPrierity.classList.add("bg-[#2A2A2D]","rounded-md")
-      todoPrierity.textContent += event.target.value
+      todoPrierity.textContent += `${event.target.dataset.todoPrierityAttribute}`
+      console.log(event.target.todoPrierityAttribute);
+      
 
-      todoElementsWrapper.append(todoTitle)
+      // todoTitle.append(todoPrierity);
         
     })
 
