@@ -36,15 +36,15 @@ function addTodoCart(event){
       let todoPrioritySelection = document.createElement('select')
 
 
-      todoFilter.forEach(priorety => {
-        console.log(priorety);
+      todoFilter.forEach(priority => {
+        console.log(priority);
         
-        let prioretyOptions = document.createElement('option')
-        prioretyOptions.classList.add("bg-[#2A2A2D]","rounded-md")
-        prioretyOptions.textContent = priorety
-        prioretyOptions.value = priorety
+        let priorityOptions = document.createElement('option')
+        priorityOptions.classList.add("bg-[#2A2A2D]","rounded-md")
+        priorityOptions.textContent = priority
+        priorityOptions.value = priority
 
-        todoPrioritySelection.append(prioretyOptions)
+        todoPrioritySelection.append(priorityOptions)
       })
       
       todoTitle.append(todoPrioritySelection )
@@ -60,7 +60,7 @@ let inProgressSelection = document.getElementById('inProgressSelection')
 let inProgressFilter = []
 export function displayinProgressTitle() {
   inProgressFilter = []
-  console.log(inProgressFilter);
+  // console.log(inProgressFilter);
   cardsDb.forEach(card => {
     if (card.status === "in-progress") {
       let inProgressOption = document.createElement('option')
@@ -74,7 +74,7 @@ export function displayinProgressTitle() {
         inProgressFilter.push(card.priority)
         
       }
-      console.log(card.title, card.priorety)
+      // console.log(card.title, card.priority)
     }
   })
 }
@@ -88,17 +88,17 @@ inProgressSelection.addEventListener('change', addInProgress)
 
   inProgressTitle.textContent += event.target.value
 
-  let inProgressPrioretySelection = document.createElement('select')
+  let inProgressprioritySelection = document.createElement('select')
 
-  inProgressFilter.forEach(priorety => {
-    let prioretyOptions = document.createElement('option')
-    prioretyOptions.classList.add("bg-[#2A2A2D]","rounded-md")
-    prioretyOptions.textContent = priorety
-    prioretyOptions.value = priorety
+  inProgressFilter.forEach(priority => {
+    let priorityOptions = document.createElement('option')
+    priorityOptions.classList.add("bg-[#2A2A2D]","rounded-md")
+    priorityOptions.textContent = priority
+    priorityOptions.value = priority
 
-    inProgressPrioretySelection.append(prioretyOptions)
+    inProgressprioritySelection.append(priorityOptions)
   })
-  inProgressTitle.append(inProgressPrioretySelection)
+  inProgressTitle.append(inProgressprioritySelection)
   
   inProgressElementsWrapper.append(inProgressTitle)
 }
@@ -107,29 +107,55 @@ inProgressSelection.addEventListener('change', addInProgress)
 let doneSelection = document.getElementById('doneSelection')
 let doneElementWrapper = document.getElementById('doneElementWrapper')
 
+let doneFilter = []
 export function displayDoneTitle(){
-  cardsDb.find(card => {
+  doneFilter = []
+  console.log(doneFilter);
+  
+  cardsDb.forEach(card => {
     if (card.status === "done") {
       let doneOption = document.createElement('option')
       doneOption.style.color = "white"
       doneOption.value = card.title
       doneOption.textContent = card.title
-      doneSelection.append(doneOption)
+      doneSelection.insertBefore(doneOption, doneSelection.firstChild)
+
+      if (!doneFilter.includes(card.priority)) {
+        doneFilter.push(card.priority)
+      }
+      console.log(card.title, card.priority);
+      
     }
-    
+    // KEEP NOTE : priority was miss pronunciation !!!!!
   })
 }
 
-doneSelection.addEventListener('change', function addInDone(event){
-  let doneTitle = document.createElement('h6')
+doneSelection.addEventListener('change',addInDone )
+function addInDone(event){
+  let doneTitle = document.createElement('span')
   doneTitle.classList.add("bg-[#2A2A2D]","rounded-md")
-  doneTitle.textContent = event.target.value
-  doneElementWrapper.append(doneTitle)
-})
+  doneTitle.textContent += event.target.value
+
+
+  let donePrioritySelection = document.createElement('select')
+
+  doneFilter.forEach(priority => {
+    let donePriorityOptions = document.createElement('option')
+    donePriorityOptions.classList.add("bg-[#2A2A2D]","rounded-md")
+    donePriorityOptions.textContent = priority
+    donePriorityOptions.value = priority
+    donePrioritySelection.append(donePriorityOptions)
+  })
+
+  doneTitle.append(donePrioritySelection)
+  doneElementWrapper.append(doneTitle);
+}
+
+
 
 let createCardBtn = document.getElementById('createCardBtn')
 createCardBtn.addEventListener('click', function cartCreation(){
-
+  
 })
 
 
