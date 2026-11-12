@@ -20,7 +20,7 @@ function ResponseFunc(resolve,reject){
     displayTodoCardsTitle()
     displayinProgressTitle()
     displayDoneTitle()
-    // console.log(cardsDb);
+    console.log(cardsDb);
     
   })
   .catch(error => {
@@ -87,6 +87,7 @@ function displayinProgressTitle() {
 inProgressSelection.addEventListener('change', function addInProgress(event){
   let inProgressTitle = document.createElement('h6')
   inProgressTitle.classList.add("bg-[#2A2A2D]","rounded-md")
+  inProgressTitle.draggable = true
 
   inProgressTitle.textContent += event.target.value
   inProgressElementsWrapper.append(inProgressTitle)
@@ -113,6 +114,11 @@ doneSelection.addEventListener('change', function addInDone(event){
   doneTitle.classList.add("bg-[#2A2A2D]","rounded-md")
   doneTitle.textContent = event.target.value
   doneElementWrapper.append(doneTitle)
+})
+
+let createCardBtn = document.getElementById('createCardBtn')
+createCardBtn.addEventListener('click', function cartCreation(){
+  
 })
 
 ResponseFunc()
