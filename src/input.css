@@ -18,7 +18,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: transparent;
     justify-content: center;
     align-items: center;
 }
@@ -31,7 +31,6 @@
     padding: 25px;
     border-radius: 10px;
     color: white;
-    font-family: Arial, sans-serif;
 }
 
 .modal-title {
@@ -121,7 +120,7 @@
     background-color: #111113;
 }
 
-#removeBtn {
+#HiddBtn {
     background-color: #39393D;
 }
 

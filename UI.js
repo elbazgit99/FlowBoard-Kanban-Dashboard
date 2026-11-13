@@ -1,9 +1,13 @@
 import {cardsDb} from "./API.js"
 
+function SetLetters(name) { return /^[A-Za-z]+(?: [A-Za-z]*)?$/.test(name) }
+function SetMaxLength(inputName, MaxLengthNum) { return inputName.maxLength = MaxLengthNum }
+function SetDescription(dscrip) { return /^[\p{L}\p{N} .,:\n]*$/u.test(dscrip) }
+function isRequired(inputName, boolean) { return inputName.required = boolean }
 
 let todoElementsWrapper = document.getElementById('todoElementsWrapper')
 let todoSelection = document.getElementById('todoSelection')
-
+//const bouton = event.target.closest('button');
 let todoFilter = []
 export function displayTodoCardsTitle(){
     todoFilter = []

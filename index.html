@@ -46,13 +46,15 @@
 
             <h2 id="modalTitle" class="modal-title">Create Task</h2>
 
-            <label for="title" class="modal-label">Title</label>
-            <input type="text" id="title" class="modal-input"
-                placeholder="Enter task title">
+            <label  class="modal-label">Title
+              <input type="text" id="title" class="modal-input"
+                  placeholder="Enter task title...">
+            </label>
 
-            <label for="description" class="modal-label">Description</label>
-            <textarea id="description" class="modal-textarea"
-                placeholder="Add a description..."></textarea>
+            <label class="modal-label">Description
+              <textarea id="description" class="modal-textarea"
+                  placeholder="Add a description..."></textarea>
+            </label>
 
             <fieldset id="taskDetails" class="task-details">
                 <legend id="detailsLegend" class="details-legend">
@@ -62,23 +64,27 @@
                 <div id="detailsRow" class="details-row">
 
                     <div id="statusItem" class="detail-item">
-                        <label for="status" class="detail-label">Status</label>
+                        <label class="detail-label">Status
+                          <select id="status" class="detail-select">
+                              <option value="" selected disabled>Status ...</option>
+                              <option value="todo">To Do</option>
+                              <option value="in-progress">In Progress</option>
+                              <option value="done">Done</option>
+                          </select>
+                        </label>
 
-                        <select id="status" class="detail-select">
-                            <option value="todo">To Do</option>
-                            <option value="in-progress">In Progress</option>
-                            <option value="done">Done</option>
-                        </select>
                     </div>
 
                     <div id="priorityItem" class="detail-item">
-                        <label for="priority" class="detail-label">Priority</label>
+                        <label class="detail-label">Priority
+                          <select id="priority" class="detail-select">
+                              <option value="" selected disabled>Priority ...</option>
+                              <option value="high">High</option>
+                              <option value="medium">Medium</option>
+                              <option value="low">Low</option>
+                          </select>
 
-                        <select id="priority" class="detail-select">
-                            <option value="high">High</option>
-                            <option value="medium">Medium</option>
-                            <option value="low">Low</option>
-                        </select>
+                        </label>
                     </div>
 
                 </div>
@@ -86,23 +92,20 @@
 
             <div id="modalButtons" class="modal-buttons">
                 <button id="addBtn" class="modal-btn">Add</button>
-                <button id="removeBtn" class="modal-btn">Remove</button>
+                <button id="HiddBtn" class="modal-btn">hidd</button>
             </div>
 
         </div>
     </div>
       <!-- end modal -->
-
-
       <div id="BoardsContainer" class="grid grid-cols-3 gap-5">
-
 
         <!-- TODO -->
         <div id="todo" class="boards  p-3 bg-[#18181B] border border-[#27272A] rounded-xl grid  gap-2">
           <label>
             <select name="todoSelection" id="todoSelection" style="appearance: none; color: rgb(176, 154, 154);"
               class="bg-[#202023]  p-2 w-full rounded-md border border-white/75">
-              <option value="" selected disabled>Select Todo Cards 　　　　　　　　　　▼</option>
+              <option value="" selected disabled>Select Todo ... 　　　　　　　　　　　　▼</option>
             </select>
           </label>
           <h4>To Do</h4>
@@ -117,7 +120,7 @@
           <label>
             <select id="inProgressSelection" name="inProgress" style="appearance: none; color: rgb(176, 154, 154);"
               class="bg-[#202023]  p-2 w-full rounded-md border border-white/75">
-              <option value="" selected disabled>Select In-Progress Cards 　　　　　　 ▼</option>
+              <option value="" selected disabled>Select In-Progress ... 　　　　　　　　 ▼</option>
             </select>
           </label>
 
@@ -135,7 +138,7 @@
           <label>
             <select id="doneSelection" name="doneSelection" style="appearance: none; color: rgb(176, 154, 154);"
               class="bg-[#202023]  p-2 w-full rounded-md border border-b-gray-500">
-              <option value="" selected disabled>Select Done Cards　　　　　　　　　　▼ </option>
+              <option value="" selected disabled>Select Done ...　　　　　　　　　　　　▼ </option>
             </select>
           </label>
 
