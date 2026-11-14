@@ -6,8 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FLOWBOARD</title>
   <link rel="stylesheet" href="src/output.css">
-  <link style="background: none;" rel="shortcut icon" href="/assets/kanban-log.jpg" type="image/x-icon">
-  <!-- <script type="module" src="UI.js" defer></script> -->
+  <link style="background: transparent; border-radius: 2rem;" rel="shortcut icon" href="/assets/logo-icon-1254.png" type="image/x-icon">
   <script type="module" src="API.js" defer></script>
 </head>
 
@@ -39,64 +38,12 @@
         <button id="openModal" type="button"
           class="h-10 bg-[#202023]  p-2 rounded-md w-40 border border-white/75">Create Card</button>
       </fieldset>
+      <label >
+        <ul name="" id="searchTitles"></ul>
 
+      </label>
       <!-- moda -->
-    <div id="myModal" class="modal">
-        <div id="modalContent" class="modal-content">
 
-            <h2 id="modalTitle" class="modal-title">Create Task</h2>
-
-            <label  class="modal-label">Title
-              <input type="text" id="title" class="modal-input"
-                  placeholder="Enter task title...">
-            </label>
-
-            <label class="modal-label">Description
-              <textarea id="description" class="modal-textarea"
-                  placeholder="Add a description..."></textarea>
-            </label>
-
-            <fieldset id="taskDetails" class="task-details">
-                <legend id="detailsLegend" class="details-legend">
-                    Task Details
-                </legend>
-
-                <div id="detailsRow" class="details-row">
-
-                    <div id="statusItem" class="detail-item">
-                        <label class="detail-label">Status
-                          <select id="status" class="detail-select">
-                              <option value="" selected disabled>Status ...</option>
-                              <option value="todo">To Do</option>
-                              <option value="in-progress">In Progress</option>
-                              <option value="done">Done</option>
-                          </select>
-                        </label>
-
-                    </div>
-
-                    <div id="priorityItem" class="detail-item">
-                        <label class="detail-label">Priority
-                          <select id="priority" class="detail-select">
-                              <option value="" selected disabled>Priority ...</option>
-                              <option value="high">High</option>
-                              <option value="medium">Medium</option>
-                              <option value="low">Low</option>
-                          </select>
-
-                        </label>
-                    </div>
-
-                </div>
-            </fieldset>
-
-            <div id="modalButtons" class="modal-buttons">
-                <button id="addBtn" class="modal-btn">Add</button>
-                <button id="HiddBtn" class="modal-btn">hidd</button>
-            </div>
-
-        </div>
-    </div>
       <!-- end modal -->
       <div id="BoardsContainer" class="grid grid-cols-3 gap-5">
 

@@ -1,0 +1,10 @@
+const url = `https://flowboard-api-virid.vercel.app`
+// const cards = "https://flowboard-api-virid.vercel.app/cards"
+// const docs = "https://flowboard-api-virid.vercel.app/docs"
+// const members = "https://flowboard-api-virid.vercel.app/members"
+// const openapi = "https://flowboard-api-virid.vercel.app/openapi.json"
+// const reset = "https://flowboard-api-virid.vercel.app/reset"
+
+// const delayurl = `https://flowboard-api-virid.vercel.app?_delay=2000`
+// const failedurl = `https://flowboard-api-virid.vercel.app?_fail=404`
+// const failed500 = `https://flowboard-api-virid.vercel.app?_fail=500` //?_fail=503

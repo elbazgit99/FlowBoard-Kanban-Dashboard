@@ -1,5 +1,5 @@
 export let cardsDb = []
-import {displayTodoCardsTitle, displayinProgressTitle, displayDoneTitle} from './UI.js'
+import {displayCards} from './UI.js'
 let resetWrapper = document.getElementById('resetWrapper')
 let resError = document.createElement('p')
 let retryBtn = document.createElement('button')
@@ -15,14 +15,13 @@ export function ResponseFunc(resolve,reject){
     }
     return res.json()
   })
+
   .then(data => {
     cardsDb = data
-    displayTodoCardsTitle()
-    displayinProgressTitle()
-    displayDoneTitle()
-    console.log(cardsDb);
+    displayCards()
     
   })
+
   .catch(error => {
     
     resError.textContent = error

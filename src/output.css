@@ -1,4 +1,4 @@
-/*! tailwindcss v4.3.4 | MIT License | https://tailwindcss.com */
+/*! tailwindcss v4.3.5 | MIT License | https://tailwindcss.com */
 @layer properties;
 @layer theme, base, components, utilities;
 @layer theme {
@@ -289,6 +289,9 @@
   .text-white {
     color: var(--color-white);
   }
+  .filter {
+    filter: var(--tw-blur, ) var(--tw-brightness, ) var(--tw-contrast, ) var(--tw-grayscale, ) var(--tw-hue-rotate, ) var(--tw-invert, ) var(--tw-saturate, ) var(--tw-sepia, ) var(--tw-drop-shadow, );
+  }
 }
 @font-face {
   font-family: StyreneB-Regular;
@@ -298,114 +301,81 @@
   font-family: 'StyreneB-Regular';
   box-sizing: border-box;
 }
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: transparent;
-  justify-content: center;
-  align-items: center;
-}
-.modal-content {
-  background-color: #202023;
-  width: 90%;
-  max-width: 450px;
-  padding: 25px;
-  border-radius: 10px;
-  color: white;
-}
-.modal-title {
-  margin-top: 0;
-}
-.modal-label {
-  display: block;
-  margin: 15px 0 7px;
-  font-size: 14px;
-}
-.modal-input, .modal-textarea {
-  width: 100%;
-  padding: 11px;
-  background-color: #2A2A2D;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 5px;
-}
-.modal-textarea {
-  height: 90px;
-  resize: vertical;
-}
-.task-details {
-  border: 1px solid #444;
-  border-radius: 7px;
-  margin-top: 20px;
-  padding: 15px;
-}
-.details-legend {
-  padding: 0 7px;
-  color: #aaa;
-}
-.details-row {
-  display: flex;
-  gap: 15px;
-}
-.detail-item {
-  flex: 1;
-  min-width: 0;
-}
-.detail-label {
-  display: block;
-  margin: 5px 0 7px;
-  font-size: 14px;
-}
-.detail-select {
-  width: 100%;
-  padding: 11px;
-  background-color: #2A2A2D;
-  color: white;
-  border: 1px solid #444;
-  border-radius: 5px;
-}
-.modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-.modal-btn {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  color: white;
-  background-color: #2A2A2D;
-}
-#addBtn {
-  background-color: #111113;
-}
-#HiddBtn {
-  background-color: #39393D;
-}
-#openModal {
-  background-color: #111113;
-}
-@media (max-width: 400px) {
-  .details-row {
-    flex-direction: column;
-    gap: 5px;
-  }
-}
 @property --tw-border-style {
   syntax: "*";
   inherits: false;
   initial-value: solid;
 }
+@property --tw-blur {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-brightness {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-contrast {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-grayscale {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-hue-rotate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-invert {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-opacity {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-saturate {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-sepia {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-drop-shadow {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-drop-shadow-color {
+  syntax: "*";
+  inherits: false;
+}
+@property --tw-drop-shadow-alpha {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --tw-drop-shadow-size {
+  syntax: "*";
+  inherits: false;
+}
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: block))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
       --tw-border-style: solid;
+      --tw-blur: initial;
+      --tw-brightness: initial;
+      --tw-contrast: initial;
+      --tw-grayscale: initial;
+      --tw-hue-rotate: initial;
+      --tw-invert: initial;
+      --tw-opacity: initial;
+      --tw-saturate: initial;
+      --tw-sepia: initial;
+      --tw-drop-shadow: initial;
+      --tw-drop-shadow-color: initial;
+      --tw-drop-shadow-alpha: 100%;
+      --tw-drop-shadow-size: initial;
     }
   }
 }
